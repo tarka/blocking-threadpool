@@ -28,3 +28,4 @@ include = [
 
 [dependencies]
 num_cpus = "1.13"
+crossbeam-channel = "0.4"
