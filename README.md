@@ -1,9 +1,13 @@
-# threadpool
+# blocking-threadpool
 
-A thread pool for running a number of jobs on a fixed set of worker threads.
+A thread pool for running a number of jobs on a fixed set of worker threads,
+with optional back-pressure for job submission.
 
-[![Build Status](https://travis-ci.org/rust-threadpool/rust-threadpool.svg?branch=master)](https://travis-ci.org/rust-threadpool/rust-threadpool)
-[![doc.rs](https://docs.rs/threadpool/badge.svg)](https://docs.rs/threadpool)
+This project is a fork of
+[rust-threadpool](https://github.com/rust-threadpool/rust-threadpool) with
+back-pressure support added and minor maintenance improvements.
+
+[![doc.rs](https://docs.rs/blocking-threadpool/badge.svg)](https://docs.rs/threadpool)
 
 ## Usage
 
@@ -11,13 +15,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-threadpool = "1.0"
-```
-
-and this to your crate root:
-
-```rust
-extern crate threadpool;
+blocking-threadpool = "1.0"
 ```
 
 ## Minimal requirements
@@ -33,6 +31,7 @@ To regain the performance consider enabling the [jemallocator crate](https://cra
 
 ## Similar libraries
 
+* [rust-threadpool](https://github.com/rust-threadpool/rust-threadpool)
 * [rayon (`rayon::ThreadPool`)](https://docs.rs/rayon/*/rayon/struct.ThreadPool.html)
 * [rust-scoped-pool](http://github.com/reem/rust-scoped-pool)
 * [scoped-threadpool-rs](https://github.com/Kimundi/scoped-threadpool-rs)
@@ -53,26 +52,3 @@ Unless you explicitly state otherwise, any contribution intentionally
 submitted for inclusion in the work by you, as defined in the Apache-2.0
 license, shall be dual licensed as above, without any additional terms or
 conditions.
-
-## Development
-
-To install rust version 1.13.0 with [rustup](https://rustup.rs) execute this command:
-```
-rustup install 1.13.0
-```
-
-To run the tests with 1.13.0 use this command:
-```
-cargo +1.13.0 test
-```
-
-If your build fails with this error:
-```
-warning: unused manifest key: package.categories
-error: failed to parse lock file at: /home/vp/rust/threadpool/Cargo.lock
-```
-
-You can fix it by removing the lock file:
-```
-rm Cargo.lock
-```

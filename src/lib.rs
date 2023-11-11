@@ -20,7 +20,7 @@
 //! Every thread sends one message over the channel, which then is collected with the `take()`.
 //!
 //! ```
-//! use threadpool::ThreadPool;
+//! use blocking_threadpool::ThreadPool;
 //! use std::sync::mpsc::channel;
 //!
 //! let n_workers = 4;
@@ -46,7 +46,7 @@
 //! https://doc.rust-lang.org/reference/behavior-not-considered-unsafe.html).
 //!
 //! ```
-//! use threadpool::ThreadPool;
+//! use blocking_threadpool::ThreadPool;
 //! use std::sync::{Arc, Barrier};
 //! use std::sync::atomic::{AtomicUsize, Ordering};
 //!
@@ -149,7 +149,7 @@ impl<'a> Drop for Sentinel<'a> {
 /// a 8 MB stack size:
 ///
 /// ```
-/// let pool = threadpool::Builder::new()
+/// let pool = blocking_threadpool::Builder::new()
 ///     .num_threads(8)
 ///     .thread_stack_size(8_000_000)
 ///     .build();
@@ -169,7 +169,7 @@ impl Builder {
     /// # Examples
     ///
     /// ```
-    /// let builder = threadpool::Builder::new();
+    /// let builder = blocking_threadpool::Builder::new();
     /// ```
     pub fn new() -> Builder {
         Builder {
@@ -195,7 +195,7 @@ impl Builder {
     /// ```
     /// use std::thread;
     ///
-    /// let pool = threadpool::Builder::new()
+    /// let pool = blocking_threadpool::Builder::new()
     ///     .num_threads(8)
     ///     .build();
     ///
@@ -223,7 +223,7 @@ impl Builder {
     /// ```
     /// use std::thread;
     ///
-    /// let pool = threadpool::Builder::new()
+    /// let pool = blocking_threadpool::Builder::new()
     ///     .thread_name("foo".into())
     ///     .build();
     ///
@@ -250,7 +250,7 @@ impl Builder {
     /// Each thread spawned by this pool will have a 4 MB stack:
     ///
     /// ```
-    /// let pool = threadpool::Builder::new()
+    /// let pool = blocking_threadpool::Builder::new()
     ///     .thread_stack_size(4_000_000)
     ///     .build();
     ///
@@ -273,7 +273,7 @@ impl Builder {
     /// # Examples
     ///
     /// ```
-    /// let pool = threadpool::Builder::new()
+    /// let pool = blocking_threadpool::Builder::new()
     ///     .num_threads(8)
     ///     .thread_stack_size(4_000_000)
     ///     .build();
@@ -360,7 +360,7 @@ impl ThreadPool {
     /// Create a new thread pool capable of executing four jobs concurrently:
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     ///
     /// let pool = ThreadPool::new(4);
     /// ```
@@ -379,7 +379,7 @@ impl ThreadPool {
     ///
     /// ```rust
     /// use std::thread;
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     ///
     /// let pool = ThreadPool::with_name("worker".into(), 2);
     /// for _ in 0..2 {
@@ -403,7 +403,7 @@ impl ThreadPool {
 
     /// **Deprecated: Use [`ThreadPool::with_name`](#method.with_name)**
     #[inline(always)]
-    #[deprecated(since = "1.4.0", note = "use ThreadPool::with_name")]
+    #[deprecated(since = "1.4.0", note = "use blocking_threadpool::with_name")]
     pub fn new_with_name(name: String, num_threads: usize) -> ThreadPool {
         Self::with_name(name, num_threads)
     }
@@ -415,7 +415,7 @@ impl ThreadPool {
     /// Execute four jobs on a thread pool that can run two jobs concurrently:
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     ///
     /// let pool = ThreadPool::new(2);
     /// pool.execute(|| println!("hello"));
@@ -439,7 +439,7 @@ impl ThreadPool {
     /// # Examples
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     /// use std::time::Duration;
     /// use std::thread::sleep;
     ///
@@ -462,7 +462,7 @@ impl ThreadPool {
     /// # Examples
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     /// use std::time::Duration;
     /// use std::thread::sleep;
     ///
@@ -485,7 +485,7 @@ impl ThreadPool {
     /// # Examples
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     ///
     /// let mut pool = ThreadPool::new(4);
     /// assert_eq!(4, pool.max_count());
@@ -502,7 +502,7 @@ impl ThreadPool {
     /// # Examples
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     ///
     /// let pool = ThreadPool::new(4);
     /// for n in 0..10 {
@@ -522,7 +522,7 @@ impl ThreadPool {
     }
 
     /// **Deprecated: Use [`ThreadPool::set_num_threads`](#method.set_num_threads)**
-    #[deprecated(since = "1.3.0", note = "use ThreadPool::set_num_threads")]
+    #[deprecated(since = "1.3.0", note = "use blocking_threadpool::set_num_threads")]
     pub fn set_threads(&mut self, num_threads: usize) {
         self.set_num_threads(num_threads)
     }
@@ -538,7 +538,7 @@ impl ThreadPool {
     /// # Examples
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     /// use std::time::Duration;
     /// use std::thread::sleep;
     ///
@@ -595,7 +595,7 @@ impl ThreadPool {
     /// # Examples
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     /// use std::sync::Arc;
     /// use std::sync::atomic::{AtomicUsize, Ordering};
     ///
@@ -643,7 +643,7 @@ impl Clone for ThreadPool {
     /// We could for example submit jobs from multiple threads concurrently.
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     /// use std::thread;
     /// use std::sync::mpsc::channel;
     ///
@@ -705,7 +705,7 @@ impl PartialEq for ThreadPool {
     /// Check if you are working with the same pool
     ///
     /// ```
-    /// use threadpool::ThreadPool;
+    /// use blocking_threadpool::ThreadPool;
     ///
     /// let a = ThreadPool::new(2);
     /// let b = ThreadPool::new(2);
