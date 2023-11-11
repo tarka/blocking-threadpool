@@ -236,7 +236,7 @@ impl Builder {
     /// use std::thread;
     /// use std::time::Duration;
     ///
-    /// let pool = threadpool::Builder::new()
+    /// let pool = blocking_threadpool::Builder::new()
     ///     .num_threads(1)
     ///     .queue_len(1)
     ///     .build();
