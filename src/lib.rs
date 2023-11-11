@@ -326,9 +326,9 @@ impl Builder {
     ///     .build();
     /// ```
     pub fn build(self) -> ThreadPool {
-        let (tx, rx) = self.queue_len.map_or(
-            cbc::unbounded(),
-            |len| cbc::bounded(len)
+        let (tx, rx) = self.queue_len.map_or_else(
+            cbc::unbounded,
+            cbc::bounded
         );
 
         let num_threads = self.num_threads.unwrap_or_else(num_cpus::get);
