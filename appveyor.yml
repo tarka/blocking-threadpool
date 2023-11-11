@@ -2,7 +2,7 @@ environment:
   global:
     RUST_VERSION: stable
 
-    CRATE_NAME: threadpool
+    CRATE_NAME: blocking-threadpool
 
   matrix:
     # MinGW
