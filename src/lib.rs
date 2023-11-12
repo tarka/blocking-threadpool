@@ -78,9 +78,6 @@
 //! assert_eq!(an_atomic.load(Ordering::SeqCst), /* n_jobs = */ 23);
 //! ```
 
-extern crate crossbeam_channel;
-extern crate num_cpus;
-
 use std::fmt;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::{Arc, Condvar, Mutex};
