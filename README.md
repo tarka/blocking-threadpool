@@ -7,7 +7,7 @@ This project is a fork of
 [rust-threadpool](https://github.com/rust-threadpool/rust-threadpool) with
 back-pressure support added and minor maintenance improvements.
 
-[![doc.rs](https://docs.rs/blocking-threadpool/badge.svg)](https://docs.rs/threadpool)
+[![doc.rs](https://docs.rs/blocking-threadpool/badge.svg)](https://docs.rs/blocking-threadpool)
 
 ## Usage
 
