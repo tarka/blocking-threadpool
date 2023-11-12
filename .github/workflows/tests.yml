@@ -1,0 +1,16 @@
+name: Unit Tests
+
+on: [push]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Update Rust to latest
+        run: ~/.cargo/bin/rustup update
+
+      - name: Run Unit Tests
+        run: cargo test
+
