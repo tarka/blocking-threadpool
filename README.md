@@ -18,10 +18,6 @@ Add this to your `Cargo.toml`:
 blocking-threadpool = "1.0"
 ```
 
-## Minimal requirements
-
-This crate requires Rust >= 1.13.0
-
 ## Memory performance
 
 Rust [1.32.0](https://blog.rust-lang.org/2019/01/17/Rust-1.32.0.html) has switched from jemalloc to the operating systems allocator.
