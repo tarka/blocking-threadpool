@@ -105,7 +105,7 @@ struct Sentinel<'a> {
 impl<'a> Sentinel<'a> {
     fn new(shared_data: &'a Arc<ThreadPoolSharedData>) -> Sentinel<'a> {
         Sentinel {
-            shared_data: shared_data,
+            shared_data,
             active: true,
         }
     }
@@ -350,7 +350,7 @@ impl Builder {
 
         ThreadPool {
             jobs: tx,
-            shared_data: shared_data,
+            shared_data,
         }
     }
 }
@@ -376,8 +376,7 @@ impl ThreadPoolSharedData {
     /// Notify all observers joining this pool if there is no more work to do.
     fn no_work_notify_all(&self) {
         if !self.has_work() {
-            *self
-                .empty_trigger
+            let _lock = self.empty_trigger
                 .lock()
                 .expect("Unable to notify all joining threads");
             self.empty_condvar.notify_all();
@@ -661,8 +660,8 @@ impl ThreadPool {
     /// ```
     pub fn join(&self) {
         // fast path requires no mutex
-        if self.shared_data.has_work() == false {
-            return ();
+        if !self.shared_data.has_work() {
+            return;
         }
 
         let generation = self.shared_data.join_generation.load(Ordering::SeqCst);
@@ -675,11 +674,11 @@ impl ThreadPool {
         }
 
         // increase generation if we are the first thread to come out of the loop
-        self.shared_data.join_generation.compare_and_swap(
+        let _ = self.shared_data.join_generation.compare_exchange(
             generation,
             generation.wrapping_add(1),
             Ordering::SeqCst,
-        );
+            Ordering::SeqCst);
     }
 }
 
@@ -765,8 +764,8 @@ impl PartialEq for ThreadPool {
     /// assert!(b != a);
     /// ```
     fn eq(&self, other: &ThreadPool) -> bool {
-        let a: &ThreadPoolSharedData = &*self.shared_data;
-        let b: &ThreadPoolSharedData = &*other.shared_data;
+        let a: &ThreadPoolSharedData = &self.shared_data;
+        let b: &ThreadPoolSharedData = &other.shared_data;
         a as *const ThreadPoolSharedData == b as *const ThreadPoolSharedData
         // with rust 1.17 and late:
         // Arc::ptr_eq(&self.shared_data, &other.shared_data)
@@ -1387,7 +1386,7 @@ mod test {
                 }
                 sleep(Duration::from_millis(10));
             }
-            return false;
+            false
         }
 
         // Lock up the only thread
