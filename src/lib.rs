@@ -766,7 +766,7 @@ impl PartialEq for ThreadPool {
     fn eq(&self, other: &ThreadPool) -> bool {
         let a: &ThreadPoolSharedData = &self.shared_data;
         let b: &ThreadPoolSharedData = &other.shared_data;
-        a as *const ThreadPoolSharedData == b as *const ThreadPoolSharedData
+        std::ptr::eq(a, b)
         // with rust 1.17 and late:
         // Arc::ptr_eq(&self.shared_data, &other.shared_data)
     }
@@ -895,7 +895,7 @@ mod test {
             });
         }
 
-        assert_eq!(rx.iter().take(TEST_TASKS).fold(0, |a, b| a + b), TEST_TASKS);
+        assert_eq!(rx.iter().take(TEST_TASKS).sum::<usize>(), TEST_TASKS);
     }
 
     #[test]
@@ -925,7 +925,7 @@ mod test {
             });
         }
 
-        assert_eq!(rx.iter().take(TEST_TASKS).fold(0, |a, b| a + b), TEST_TASKS);
+        assert_eq!(rx.iter().take(TEST_TASKS).sum::<usize>(), TEST_TASKS);
     }
 
     #[test]
@@ -978,7 +978,7 @@ mod test {
         assert_eq!(pool.active_count(), TEST_TASKS);
         b1.wait();
 
-        assert_eq!(rx.iter().take(test_tasks).fold(0, |a, b| a + b), test_tasks);
+        assert_eq!(rx.iter().take(test_tasks).sum::<usize>(), test_tasks);
         pool.join();
 
         let atomic_active_count = pool.active_count();
@@ -1155,8 +1155,8 @@ mod test {
         pool1.join();
         error("pool1.join() complete\n".into());
         assert_eq!(
-            rx.iter().fold(0, |acc, i| acc + i),
-            0 + 1 + 2 + 3 + 4 + 5 + 6 + 7
+            rx.iter().sum::<i32>(),
+            1 + 2 + 3 + 4 + 5 + 6 + 7
         );
     }
 
@@ -1167,7 +1167,7 @@ mod test {
 
         pool.join();
 
-        assert!(true);
+        assert_eq!(0, pool.jobs.len());
     }
 
     #[test]
@@ -1217,7 +1217,7 @@ mod test {
                 }
                 drop(tx);
                 rx.iter()
-                    .fold(0, |accumulator, element| accumulator + element)
+                    .sum::<i32>()
             })
         };
         let t1 = {
@@ -1235,7 +1235,7 @@ mod test {
                 }
                 drop(tx);
                 rx.iter()
-                    .fold(1, |accumulator, element| accumulator * element)
+                    .product::<i32>()
             })
         };
 
