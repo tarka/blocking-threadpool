@@ -335,7 +335,7 @@ impl Builder {
 
         let shared_data = Arc::new(ThreadPoolSharedData {
             name: self.thread_name,
-            job_receiver: Mutex::new(rx),
+            job_receiver: rx,
             empty_condvar: Condvar::new(),
             empty_trigger: Mutex::new(()),
             join_generation: AtomicUsize::new(0),
@@ -360,7 +360,7 @@ impl Builder {
 
 struct ThreadPoolSharedData {
     name: Option<String>,
-    job_receiver: Mutex<cbc::Receiver<Thunk<'static>>>,
+    job_receiver: cbc::Receiver<Thunk<'static>>,
     empty_trigger: Mutex<()>,
     empty_condvar: Condvar,
     join_generation: AtomicUsize,
@@ -797,15 +797,9 @@ fn spawn_in_pool(shared_data: Arc<ThreadPoolSharedData>) {
                 if thread_counter_val >= max_thread_count_val {
                     break;
                 }
-                let message = {
-                    // Only lock jobs for the time it takes
-                    // to get a job, not run it.
-                    let lock = shared_data
-                        .job_receiver
-                        .lock()
-                        .expect("Worker thread unable to lock job_receiver");
-                    lock.recv()
-                };
+                let message = shared_data
+                    .job_receiver
+                    .recv();
 
                 let job = match message {
                     Ok(job) => job,
